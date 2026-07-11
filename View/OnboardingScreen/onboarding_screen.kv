@@ -1,0 +1,33 @@
+
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+
+<OnboardingScreenView>
+  md_bg_color: get_color_from_hex("#b2f2bb")
+  
+  MDLabel:
+    adaptive_height: True
+    text: "FORECASTING APPLICATION"
+    font_style: "Title"
+    bold: True
+    halign: "center"
+    padding: "16dp"
+    pos_hint: {"top": .85}
+
+  LoadingBar2:
+    size_hint: .75, None
+    height: 35
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    bg_color: get_color_from_hex("#000000")
+    bar_color: get_color_from_hex("#fcec99")
+    border_color: get_color_from_hex("#000000")
+    text_color: get_color_from_hex("#ff7f00")
+    border_width: 2
+    progress: 0.67
+
+  MDLabel:
+    text: "Loading..."
+    adaptive_size: True
+    pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+    bold: True
+
+

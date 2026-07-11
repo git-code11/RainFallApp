@@ -1,0 +1,65 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import MDRecycleBoxLayout kivymd.uix.recycleboxlayout.MDRecycleBoxLayout
+
+<ChatText>
+  md_bg_color: get_color_from_hex("#ffd43b")
+  line_color: get_color_from_hex("#1e1e1e")
+  line_width: 1
+  border_width: dp(2)
+  padding: dp(4)
+  radius: dp(4)
+  text:""
+  adaptive_height: True
+
+  MDLabel:
+    id: label
+    padding: dp(4)
+    text: root.text
+    adaptive_height: True
+
+
+<ChatList>
+  viewclass: "ChatText"
+  line_color: get_color_from_hex("#1e1e1e")
+  radius: dp(8)
+
+
+  MDRecycleBoxLayout:
+    md_bg_color: get_color_from_hex("#0ff0fb")
+    orientation: 'vertical'
+    adaptive_height: True
+    spacing: dp(24)
+    padding: dp(8)
+    key_size: "item_size"
+
+
+<ChatContainer@MDBoxLayout>
+  radius: dp(10)
+
+  ChatList:
+
+
+<ChatPanel@MDWidget>
+  md_bg_color: get_color_from_hex("#ffd43b")
+  line_color: get_color_from_hex("#1e1e1e")
+  radius: dp(8)
+  padding: dp(4)
+
+  TextInput:
+    # height: self.minimum_height
+    height: root.height - root.padding
+    center_y: root.center_y
+    x: root.x + root.padding
+    # width: self.height
+
+
+<ChatLayout>
+  md_bg_color: get_color_from_hex("#a5d8ff")
+  orientation: "vertical"
+  padding: dp(16)
+  spacing: dp(16)
+
+  ChatContainer:
+
+  ChatPanel:
+    size_hint_y: .20

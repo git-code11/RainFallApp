@@ -1,0 +1,78 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+
+<LoadingBar@BoxLayout>
+  pad: 10
+  border_width: 1
+  border_color: 1, 1, 0, 1
+  bg_color: 0, 1, 1, 1
+  bar_color: 0, 1, 0, 1
+  radius: 5
+  value: 100
+  progress: 0.34
+  text_color: 1, 1, 0, 1
+  
+  canvas.before:
+    Color:
+      rgba: root.bg_color
+    RoundedRectangle:
+      pos: root.pos
+      size: root.size
+      radius: [root.radius]
+
+  canvas:
+    Color:
+      rgba: root.bar_color
+    RoundedRectangle:
+      pos: root.x + root.pad, root.y + root.pad
+      size: (root.width - root.pad * 2)*self.progress, root.height - root.pad * 2
+      radius: [root.radius]
+
+  canvas.after:
+    Color:
+      rgba: root.border_color
+    Line:
+      rounded_rectangle: root.x + root.pad, root.y + root.pad, root.width - root.pad * 2, root.height - root.pad * 2, root.radius
+      width: 2.5 if root.border_width > 1 else 1.25
+  
+  RelativeLayout:
+    MDLabel:
+      adaptive_width: True
+      right: root.width - root.pad * 2 - 4
+      text: f"{root.value * root.progress:.1f}%"
+      color: root.text_color
+      bold: True
+
+
+
+<LoadingBar2@BoxLayout>
+  border_width: 2
+  bar_color: 0, 1, 0, 1
+  bg_color: 0, 0, 0, 1
+  border_color: 0, 1, 1, 1
+  radius: 5
+  value: 100
+  progress: 0.34
+  text_color: 1, 1, 0, 1
+
+  LoadingBar:
+    pad: 0
+    border_width: root.border_width
+    border_color: root.border_color
+    bg_color: root.bg_color
+    bar_color: root.bar_color
+    radius: root.radius
+    value: root.value
+    progress: root.progress
+    text_color: root.text_color
+
+
+
+## Examples
+  # LoadingBar:
+  #   size_hint: .75, .15
+  #   pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+  #   bg_color: get_color_from_hex("#c9c9c9")
+  #   bar_color: get_color_from_hex("#fcec99")
+  #   border_color: get_color_from_hex("#fc0c09")
+  #   border_width: 1
+

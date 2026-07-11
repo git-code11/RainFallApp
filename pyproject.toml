@@ -1,0 +1,16 @@
+[project]
+name = "rainfallproject"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "kivy[base]>=2.3.1",
+    "kivymd>=1.2.0",
+    "pillow>=10.4.0",
+    "pyautogui>=0.9.54",
+    "watchdog>=6.0.0",
+]
+
+[tool.uv.sources]
+kivymd = { url = "https://github.com/kivymd/KivyMD/archive/master.zip" }

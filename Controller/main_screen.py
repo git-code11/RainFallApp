@@ -1,13 +1,11 @@
 import importlib
+from multitasking import task
 
 import View.MainScreen.main_screen
-
 # We have to manually reload the view module in order to apply the
 # changes made to the code on a subsequent hot reload.
 # If you no longer need a hot reload, you can delete this instruction.
 importlib.reload(View.MainScreen.main_screen)
-
-
 
 
 class MainScreenController:
@@ -20,7 +18,16 @@ class MainScreenController:
 
     def __init__(self, model):
         self.model = model  # Model.main_screen.MainScreenModel
-        self.view = View.MainScreen.main_screen.MainScreenView(controller=self, model=self.model)
+        self.view = View.MainScreen.main_screen.MainScreenView(
+            controller=self, model=self.model)
+
+    @task
+    def forecast(self, **kwargs):
+        try:
+            result = self.model.forecast(**kwargs)
+            self.view.data = result
+        except Exception as e:
+            self.view.error = e.args[0]
 
     def get_view(self) -> View.MainScreen.main_screen:
         return self.view

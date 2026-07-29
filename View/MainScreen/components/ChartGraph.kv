@@ -1,15 +1,14 @@
-
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 
-<ChartGraph@MDBoxLayout>
-  md_bg_color: get_color_from_hex("#000000")
-  padding: 3
-  radius: 8
+<ChartGraph>
+  texture: None
+  bgcolor: 1, 1, 1, 1
 
-  MDWidget:
-    md_bg_color: get_color_from_hex("#fab005")
-    radius: 5
-    pos_hint: {"center_x": .5, "center_y": .5}
-
-
-
+  canvas:
+    Clear
+    Color:
+      rgba: self.bgcolor
+    Rectangle:
+      texture: self.texture
+      pos: self.pos 
+      size: self.size

@@ -1,53 +1,82 @@
 
-<ActionBtn@MDButton>:
-  text: "Button"
+<ActionBtn@MDIconButton+MDTooltip>:
+  label: None
   style: "filled"
-  # x: 30
-  # center_y: self.text
-  # right: root.width - 10
-
-  MDButtonText:
-    text: root.text
-    bold: True
+  tooltip_text: root.label
 
 
 <MainScreenView>
   md_bg_color: 1, 1, 1, 1
+  chat_layout: chat_layout
+  graph: graph
+  date_label: date_label
+  # drop_text: drop_text
+  
+  MDBoxLayout:
+    orientation: "vertical"
+    size_hint: 1, 1
+    spacing: dp(8)
+    padding: dp(0), dp(8)
 
-  MDLabel:
-    id: title
-    text: "FORECASTING APP"
-    adaptive_size: True
-    pos_hint: {"top": 0.9, "center_x": .5}
-    bold: True
-    font_style: "Title"
-    role: "medium"
+    MDLabel:
+      text: "FORECASTING APP"
+      adaptive_size: True
+      pos_hint: {"center_x": .5}
+      bold: True
+      font_style: "Title"
+      role: "large"
 
-  MDButton:
-    style: "outlined"
-    x: 30
-    center_y: title.center_y
-    right: root.width - 10
-
-    MDButtonText:
-      text: "Analyze"
+    MDLabel:
+      halign: "center"
+      id: date_label
+      adaptive_size: True
+      pos_hint: {"center_x": .5}
+      text: ""
       bold: True
 
-  ChartGraph:
-    size_hint: .9, .55
-    pos_hint: {"center_y": .5, "center_x": .5}
-    # opacity: 0
+    ChartGraph:
+      id: graph
+      pos_hint: {"center_y": .5, "center_x": .5}
 
-  MDBoxLayout:
-    pos_hint: {"center_x": .5, "center_y": .1}
-    adaptive_size: True
-    spacing: dp(16)
+    MDBoxLayout:
+      pos_hint: {"center_x": .5, "center_y": .1}
+      adaptive_size: True
+      spacing: dp(32)
 
-    ActionBtn:
-      text: "Back"
+      ActionBtn:
+        icon: "book"
+        label: "select date"
+        on_press: root.open_menu(self)
 
-    ActionBtn:
-      text: "Refresh"
+      ActionBtn:
+        icon: "calendar-search"
+        label: "select date"
+        on_press: root.set_date()
 
-    ActionBtn:
-      text: "Next"
+      ActionBtn:
+        icon: "refresh"
+        label: "refresh"
+        on_press: root.refresh()
+
+      ActionBtn:
+        icon: "arrow-left"
+        label: "previous"
+        on_press: root.shift_date(True)
+
+      ActionBtn:
+        icon: "arrow-right"
+        label: "Next"
+        on_press: root.shift_date(False)
+ 
+  MDFabButton:
+    icon: "close" if root.chat_visibility else "message"
+    style: "standard"
+    on_press: root.toggle_chat()
+    pos_hint: {"right":0.98, "top": 0.98}
+
+
+  MDFloatLayout:
+    ChatLayout:
+      id: chat_layout
+      x: -self.width
+      size_hint_x: .75

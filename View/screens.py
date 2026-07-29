@@ -9,13 +9,13 @@ from Model.common_screen import CommonScreenModel
 from Controller.common_screen import CommonScreenController
 
 screens = {
-    'common screen': {
-        'model': CommonScreenModel,
-        'controller': CommonScreenController,
-    },
     'main screen': {
         'model': MainScreenModel,
         'controller': MainScreenController,
+    },
+    'common screen': {
+        'model': CommonScreenModel,
+        'controller': CommonScreenController,
     },
     'onboarding screen': {
         'model': OnboardingScreenModel,

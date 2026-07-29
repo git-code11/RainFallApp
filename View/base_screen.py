@@ -1,7 +1,11 @@
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, StringProperty
 
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
+from kivy.clock import Clock, mainthread
+from kivymd.uix.snackbar import MDSnackbar, MDSnackbarText
+from kivy.metrics import dp
+
 
 from Utility.observer import Observer
 
@@ -36,6 +40,11 @@ class BaseScreenView(MDScreen, Observer):
     and defaults to `None`.
     """
 
+    error = StringProperty()
+    """
+    Error Handling Mechanism
+    """
+
     def __init__(self, **kw):
         super().__init__(**kw)
         # Often you need to get access to the application object from the view
@@ -43,3 +52,21 @@ class BaseScreenView(MDScreen, Observer):
         self.app = MDApp.get_running_app()
         # Adding a view class as observer.
         self.model.add_observer(self)
+
+    @mainthread
+    def on_error(self, _, text):
+        if text == "":
+            return
+        print(f"Error {text}")
+        Clock.schedule_once(lambda _: self.setter("error")(None, ""), 0)
+        # Show snackbar
+        MDSnackbar(
+            MDSnackbarText(
+                text=text,
+                theme_text_color="Custom",
+                text_color=(1, 0, 0, 1),
+            ),
+            y=dp(36),
+            pos_hint={"right": 1, "top": 1.},
+            size_hint_x=.85,
+        ).open()

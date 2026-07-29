@@ -2,7 +2,7 @@
 #:import MDRecycleBoxLayout kivymd.uix.recycleboxlayout.MDRecycleBoxLayout
 
 <ChatText>
-  md_bg_color: get_color_from_hex("#ffd43b")
+  md_bg_color: get_color_from_hex("#ffeeff")
   line_color: get_color_from_hex("#1e1e1e")
   line_width: 1
   border_width: dp(2)
@@ -20,12 +20,9 @@
 
 <ChatList>
   viewclass: "ChatText"
-  line_color: get_color_from_hex("#1e1e1e")
-  radius: dp(8)
 
 
   MDRecycleBoxLayout:
-    md_bg_color: get_color_from_hex("#0ff0fb")
     orientation: 'vertical'
     adaptive_height: True
     spacing: dp(24)
@@ -34,27 +31,54 @@
 
 
 <ChatContainer@MDBoxLayout>
+  md_bg_color: get_color_from_hex("#ffffff")
   radius: dp(10)
-
+  line_color: get_color_from_hex("#1e1e1e")
   ChatList:
 
 
-<ChatPanel@MDWidget>
-  md_bg_color: get_color_from_hex("#ffd43b")
+
+<ChatPanel@MDBoxLayout>
+  md_bg_color: get_color_from_hex("#ffffff")
   line_color: get_color_from_hex("#1e1e1e")
   radius: dp(8)
   padding: dp(4)
+  spacing: dp(8)
+  adaptive_height: True
+  
+  
+  MDTextField:
+    id: input_text
+    mode: "outlined"
+    theme_line_color: "Custom"
+    line_color_focus: get_color_from_hex("#ffffff00")
+    line_color_normal: get_color_from_hex("#ffffff00")
+    theme_text_color: "Custom"
+    text_color_normal: get_color_from_hex("#1e1e1ebb")
+    text_color_focus: get_color_from_hex("#1e1e1e")
+    text: "Hello\n"*10
+    height: dp(48)
+    # There is issues with multiline rendering
+    # multiline: True
+    # adaptive_height: True
+    # max_height: dp(75)
 
-  TextInput:
-    # height: self.minimum_height
-    height: root.height - root.padding
-    center_y: root.center_y
-    x: root.x + root.padding
-    # width: self.height
 
+  MDIconButton:
+    icon: "send"
+    style: "filled"
+    on_press: print(f"{input_text.height=}")
+    pos_hint: {"center_y": .5}
+    theme_bg_color: "Custom"
+    md_bg_color: get_color_from_hex("#ffffff")
+    theme_icon_color: "Custom"
+    icon_color: get_color_from_hex("#1e1e1e")
+    size: dp(48), dp(48)
+    theme_font_size: "Custom"
+    font_size: sp(32)
 
 <ChatLayout>
-  md_bg_color: get_color_from_hex("#a5d8ff")
+  md_bg_color: get_color_from_hex("#aeaeae")
   orientation: "vertical"
   padding: dp(16)
   spacing: dp(16)
@@ -62,4 +86,4 @@
   ChatContainer:
 
   ChatPanel:
-    size_hint_y: .20
+    height: dp(40)

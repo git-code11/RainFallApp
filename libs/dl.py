@@ -1,23 +1,25 @@
 import numpy as np
-from ai_edge_litert.compiled_model import CompiledModel
+
+from ai_edge_litert.interpreter import Interpreter
+# Import the LiteRT interpreter module
 
 
 class TFLiteRuntime:
-    def __init__(self, model: CompiledModel):
-        self.model = model
-        self.signature_index = 0
-        self.input_buffers = model.create_input_buffers(self.signature_index)
-        self.output_buffers = model.create_output_buffers(self.signature_index)
+    def __init__(self, interpreter: Interpreter):
+        self.interpreter = interpreter
+        self.input_index = interpreter.get_input_details()[0]['index']
+        self.output_index = interpreter.get_output_details()[0]['index']
 
     def __call__(self, X):
-        self.input_buffers[0].write(X)
-        self.model.run_by_index(self.signature_index,
-                                self.input_buffers, self.output_buffers)
-        output_array = self.output_buffers[0].read(1, np.float32)
-        return output_array
+        X = np.array(X, dtype=np.float32)
+        self.interpreter.set_tensor(self.input_index, X)
+        self.interpreter.invoke()
+        y_pred = self.interpreter.get_tensor(self.output_index)
+        return y_pred
 
     @classmethod
     def load(cls, model_path):
         assert model_path.lower().endswith("tflite"), "Require .tflite suffix"
-        model = CompiledModel.from_file(model_path=model_path)
-        return cls(model)
+        interpreter = Interpreter(model_path=model_path)
+        interpreter.allocate_tensors()
+        return cls(interpreter)

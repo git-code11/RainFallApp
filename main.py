@@ -12,6 +12,7 @@ import dotenv
 dotenv.load_dotenv()
 
 from kivy import Config
+from kivy.clock import Clock
 # TODO: You may know an easier way to get the size of a computer display.
 try:
     from PIL import ImageGrab
@@ -29,6 +30,13 @@ from kivy.core.window import Window
 # Place the application window on the right side of the computer screen.
 Window.top = 0
 Window.left = resolution[0] - Window.width
+
+from libs.app import ForecastApp
+
+data_path = r"./assets/data.xls"
+model_path = r"./assets/RainFallModelLinear.tflite"
+forecaster = ForecastApp(data_path, model_path)
+
 
 
 from kivymd.uix.screenmanager import MDScreenManager
@@ -51,7 +59,7 @@ class RainfallProject(MDApp):
         """
 
         import View.screens
-
+        self.forecaster = forecaster
         self.manager_screens = MDScreenManager()
         Window.bind(on_key_down=self.on_keyboard_down)
         importlib.reload(View.screens)
@@ -64,8 +72,11 @@ class RainfallProject(MDApp):
             view.manager_screens = self.manager_screens
             view.name = name_screen
             self.manager_screens.add_widget(view)
-
+        Clock.schedule_once(lambda _: self.go_to_main(), 5)
         return self.manager_screens
+
+    def go_to_main(self):
+        self.manager_screens.current = "main screen"
 
     def on_keyboard_down(self, window, keyboard, keycode, text, modifiers) -> None:
         """

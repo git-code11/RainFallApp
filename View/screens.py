@@ -9,6 +9,10 @@ from Model.common_screen import CommonScreenModel
 from Controller.common_screen import CommonScreenController
 
 screens = {
+    'onboarding screen': {
+        'model': OnboardingScreenModel,
+        'controller': OnboardingScreenController,
+    },
     'main screen': {
         'model': MainScreenModel,
         'controller': MainScreenController,
@@ -16,9 +20,5 @@ screens = {
     'common screen': {
         'model': CommonScreenModel,
         'controller': CommonScreenController,
-    },
-    'onboarding screen': {
-        'model': OnboardingScreenModel,
-        'controller': OnboardingScreenController,
     },
 }

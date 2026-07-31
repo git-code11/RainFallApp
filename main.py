@@ -8,6 +8,12 @@ https://kivymd.readthedocs.io/en/latest/api/kivymd/tools/patterns/create_project
 To run the application in hot boot mode, execute the command in the console:
 DEBUG=1 python main.py
 """
+import dotenv
+dotenv.load_dotenv()
+from kivy import Config
+Config.set("graphics", "height", "360")
+Config.set("graphics", "width", "480")
+Config.set("graphics", "fullscreen", 0)
 from kivy.clock import Clock, mainthread
 from multitasking import task
 from kivymd.app import MDApp
@@ -15,15 +21,9 @@ from kivymd.uix.screenmanager import MDScreenManager
 from kivy.properties import BooleanProperty
 from View.screens import screens
 from kivy.core.window import Window
-from kivy import Config
-import dotenv
-dotenv.load_dotenv()
 
 # Change the values of the application window size as you need.
 # Config.set("graphics", "height", resolution[1])
-Config.set("graphics", "height", "360")
-Config.set("graphics", "width", "480")
-Config.set("graphics", "fullscreen", 0)
 
 # TODO: You may know an easier way to get the size of a computer display.
 try:

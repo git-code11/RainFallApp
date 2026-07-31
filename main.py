@@ -10,9 +10,13 @@ DEBUG=1 python main.py
 """
 import dotenv
 dotenv.load_dotenv()
-
 from kivy import Config
-from kivy.clock import Clock
+
+# Change the values of the application window size as you need.
+# Config.set("graphics", "height", resolution[1])
+Config.set("graphics", "height", "360")
+Config.set("graphics", "width", "480")
+
 # TODO: You may know an easier way to get the size of a computer display.
 try:
     from PIL import ImageGrab
@@ -21,79 +25,19 @@ except OSError:
     import pyautogui
     resolution = pyautogui.size()
 
-# Change the values of the application window size as you need.
-# Config.set("graphics", "height", resolution[1])
-Config.set("graphics", "height", "360")
-Config.set("graphics", "width", "480")
-
 from kivy.core.window import Window
 # Place the application window on the right side of the computer screen.
 Window.top = 0
 Window.left = resolution[0] - Window.width
 
-from libs.app import ForecastApp
-
-data_path = r"./assets/data.xls"
-model_path = r"./assets/RainFallModelLinear.tflite"
-forecaster = ForecastApp(data_path, model_path)
-
-
-
+from View.screens import screens
+from kivy.properties import BooleanProperty
 from kivymd.uix.screenmanager import MDScreenManager
-from kivymd.tools.hotreload.app import MDApp
-import importlib
-import os
+from kivymd.app import MDApp
+from multitasking import task
+from kivy.clock import Clock, mainthread
 
 
-
-
-
-class RainfallProject(MDApp):
-    KV_DIRS = [os.path.join(os.getcwd(), "View")]
-    AUTORELOADER_IGNORE_PATTERNS = [*MDApp.AUTORELOADER_IGNORE_PATTERNS.defaultvalue, "*.git*", "*.venv*"]
-
-    def build_app(self) -> MDScreenManager:
-        """
-        In this method, you don't need to change anything other than the
-        application theme.
-        """
-
-        import View.screens
-        self.forecaster = forecaster
-        self.manager_screens = MDScreenManager()
-        Window.bind(on_key_down=self.on_keyboard_down)
-        importlib.reload(View.screens)
-        screens = View.screens.screens
-
-        for i, name_screen in enumerate(screens.keys()):
-            model = screens[name_screen]["model"]()
-            controller = screens[name_screen]["controller"](model)
-            view = controller.get_view()
-            view.manager_screens = self.manager_screens
-            view.name = name_screen
-            self.manager_screens.add_widget(view)
-        Clock.schedule_once(lambda _: self.go_to_main(), 5)
-        return self.manager_screens
-
-    def go_to_main(self):
-        self.manager_screens.current = "main screen"
-
-    def on_keyboard_down(self, window, keyboard, keycode, text, modifiers) -> None:
-        """
-        The method handles keyboard events.
-
-        By default, a forced restart of an application is tied to the
-        `CTRL+R` key on Windows OS and `COMMAND+R` on Mac OS.
-        """
-
-        if "meta" in modifiers or "ctrl" in modifiers and text == "r":
-            self.rebuild()
-
-
-RainfallProject().run()
-
-# After you finish the project, remove the above code and uncomment the below
-# code to test the application normally without hot reloading.
 
 # """
 # The entry point to the application.
@@ -108,41 +52,67 @@ RainfallProject().run()
 # https://en.wikipedia.org/wiki/Model–view–controller
 # """
 #
-# from kivymd.app import MDApp
-# from kivymd.uix.screenmanager import MDScreenManager
-#
-# from View.screens import screens
-#
-#
-# class RainfallProject(MDApp):
-#     def __init__(self, **kwargs):
-#         super().__init__(**kwargs)
-#         self.load_all_kv_files(self.directory)
-#         # This is the screen manager that will contain all the screens of your
-#         # application.
-#         self.manager_screens = MDScreenManager()
-#
-#     def build(self) -> MDScreenManager:
-#         self.generate_application_screens()
-#         return self.manager_screens
-#
-#     def generate_application_screens(self) -> None:
-#         """
-#         Creating and adding screens to the screen manager.
-#         You should not change this cycle unnecessarily. He is self-sufficient.
-#
-#         If you need to add any screen, open the `View.screens.py` module and
-#         see how new screens are added according to the given application
-#         architecture.
-#         """
-#
-#         for i, name_screen in enumerate(screens.keys()):
-#             model = screens[name_screen]["model"]()
-#             controller = screens[name_screen]["controller"](model)
-#             view = controller.get_view()
-#             view.manager_screens = self.manager_screens
-#             view.name = name_screen
-#             self.manager_screens.add_widget(view)
-#
-#
-# RainfallProject().run()
+
+
+class RainfallProject(MDApp):
+    active = BooleanProperty(False)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.load_all_kv_files(self.directory)
+        # This is the screen manager that will contain all the screens of your
+        # application.
+        self.manager_screens = MDScreenManager()
+        self.onboarding_screen = "onboarding screen"
+
+
+    def build(self) -> MDScreenManager:
+        self.add_screen(self.onboarding_screen)
+        self.load_forecaster()
+        return self.manager_screens
+
+    @task
+    def load_forecaster(self):
+        from libs.app import ForecastApp
+
+        data_path = r"./assets/data.xls"
+        model_path = r"./assets/RainFallModelLinear.tflite"
+        self.forecaster = ForecastApp(data_path, model_path)
+        self.active = True
+
+    @mainthread
+    def on_active(self, _, __):
+        onboarding_screen = self.manager_screens.current_screen
+        self.generate_application_screens()
+        onboarding_screen.stop()
+
+    def generate_application_screens(self) -> None:
+        """
+        Creating and adding screens to the screen manager.
+        You should not change this cycle unnecessarily. He is self-sufficient.
+
+        If you need to add any screen, open the `View.screens.py` module and
+        see how new screens are added according to the given application
+        architecture.
+        """
+        for i, name_screen in enumerate(screens.keys()):
+            if self.onboarding_screen == name_screen:
+                continue
+            self.add_screen(name_screen)
+
+        def go_to_main(_):
+            self.manager_screens.current = "main screen"
+
+        Clock.schedule_once(go_to_main, 0)
+
+    def add_screen(self, name_screen: str):
+        model = screens[name_screen]["model"]()
+        print(model)
+        controller = screens[name_screen]["controller"](model)
+        view = controller.get_view()
+        view.manager_screens = self.manager_screens
+        view.name = name_screen
+        self.manager_screens.add_widget(view)
+
+if __name__ == "__main__":
+    RainfallProject().run()

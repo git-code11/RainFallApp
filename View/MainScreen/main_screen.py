@@ -1,6 +1,6 @@
 from View.base_screen import BaseScreenView
 import datetime
-from kivy.properties import ObjectProperty, BooleanProperty, DictProperty, StringProperty, ReferenceListProperty
+from kivy.properties import ObjectProperty, BooleanProperty, DictProperty, StringProperty, ReferenceListProperty, ListProperty
 from kivy.clock import Clock
 from kivy.animation import Animation, AnimationTransition
 from kivymd.uix.pickers import MDModalInputDatePicker
@@ -16,19 +16,21 @@ class MainScreenView(BaseScreenView):
     data = ObjectProperty()
     date = DictProperty()
     selected_region = StringProperty()
-    labels = ReferenceListProperty(selected_region, date)
+    selected_key = ReferenceListProperty(selected_region, date)
+    messages = ListProperty()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.month_gap = 12
         self.interval = 4
         today_month = datetime.date.today().replace(year=2015)
+        today_month = datetime.datetime.combine(today_month, datetime.time.min)
         older_month = today_month - datetime.timedelta(days=self.month_gap*30)
 
         self.refresh = Clock.create_trigger(self._refresh)
         self.chat_animation = None
 
-        self.bind(labels=self.label_handler)
+        self.bind(selected_key=self.selected_handler)
 
         def cb(_):
             self.date = dict(
@@ -48,9 +50,9 @@ class MainScreenView(BaseScreenView):
         self.chat_animation.start(self.chat_layout)
 
     def on_data(self, _, data):
-        self.graph.data = [data['period'], data['precipitation']]
+        self.graph.data = data
 
-    def label_handler(self, _, __):
+    def selected_handler(self, _, __):
         self.date_label.text = f"Region ID: {self.selected_region}\nStart Date: {self.date['start'].strftime(
             r'%m/%Y')}      End Date: {self.date['end'].strftime(r'%m/%Y')}"
         self.refresh()
@@ -96,8 +98,8 @@ class MainScreenView(BaseScreenView):
         self.date = new_date
 
     def open_menu(self, item):
-        def cb(region_id):
-            self.selected_region = region_id
+        def cb(region_key):
+            self.selected_region = region_key
         menu_items = [
             {
                 "text": k,
@@ -105,6 +107,9 @@ class MainScreenView(BaseScreenView):
             } for k in self.model.unique_key
         ]
         MDDropdownMenu(caller=item, items=menu_items).open()
+
+    def send_message(self, _, text: str):
+        self.controller.send_text(text)
 
     def model_is_changed(self) -> None:
         """

@@ -58,6 +58,9 @@ class ForecastEngine:
             self.df[group_key]) + 1
         self.labelEncoder = labelEncoder
 
+        self.min_date = self.df.groupby(self.group_key)[
+            'period'].min()
+
         self.df_last_timestamp = self.df.groupby(self.group_key)[
             'period'].max()
 
@@ -149,8 +152,9 @@ class ForecastEngine:
         self.df = pd.concat([self.df, new_df])
 
     def forecast(self, model,
-                 region_key: str,  start_time: pd.Timestamp | datetime.datetime | None = None,
-                 end_time: pd.Timestamp | datetime.datetime | None = None,
+                 region_key: str,
+                 start_time: pd.Timestamp | datetime.datetime | datetime.date | None = None,
+                 end_time: pd.Timestamp | datetime.datetime | datetime.date | None = None,
                  length: int | None = None):
         if isinstance(start_time, (datetime.datetime, datetime.date)):
             start_time = pd.Timestamp(start_time)
@@ -178,26 +182,3 @@ class ForecastEngine:
         result = self.get_data(region_key, [start_time, end_time])
         return result
         # return result.set_index(self.period_label, drop=False)
-
-
-if __name__ == '__main__':
-    df = pd.read_excel(r"assets/data.xls")
-    df = df[['period', 'precipitation', 'key']]
-
-    data_gen = ForecastEngine(
-        df=df,
-        group_key='key',
-        feature_label='precipitation',
-        period_label='period',
-        sequence_length=6,
-    )
-
-    unique_key = data_gen.unique_key[0]
-
-    print(f"{data_gen.unique_key=}")
-    out = data_gen.feature_at_time(
-        unique_key, data_gen.next_timestamp(unique_key))
-    out2 = data_gen.feature_at_time(
-        unique_key, data_gen.last_timestamp(unique_key))
-    print(f"{out=}")
-    print(f"{out2=}")

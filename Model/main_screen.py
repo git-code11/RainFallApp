@@ -12,6 +12,9 @@ class MainScreenModel(BaseScreenModel):
     Implements the logic of the
     :class:`~View.main_screen.MainScreen.MainScreenView` class.
     """
+    @property
+    def forecaster(self):
+        return forecaster
 
     @property
     def unique_key(self):

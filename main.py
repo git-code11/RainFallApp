@@ -8,7 +8,8 @@ https://kivymd.readthedocs.io/en/latest/api/kivymd/tools/patterns/create_project
 To run the application in hot boot mode, execute the command in the console:
 DEBUG=1 python main.py
 """
-
+import dotenv
+dotenv.load_dotenv()
 
 from kivy import Config
 # TODO: You may know an easier way to get the size of a computer display.

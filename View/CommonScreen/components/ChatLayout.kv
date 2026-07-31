@@ -15,6 +15,7 @@
     id: label
     padding: dp(4)
     text: root.text
+    markup: True
     adaptive_height: True
 
 
@@ -31,14 +32,18 @@
 
 
 <ChatContainer@MDBoxLayout>
+  chat_list: chat_list
   md_bg_color: get_color_from_hex("#ffffff")
   radius: dp(10)
   line_color: get_color_from_hex("#1e1e1e")
   ChatList:
+    id: chat_list
 
 
 
 <ChatPanel@MDBoxLayout>
+  action: None
+  input_field: input_field
   md_bg_color: get_color_from_hex("#ffffff")
   line_color: get_color_from_hex("#1e1e1e")
   radius: dp(8)
@@ -48,7 +53,7 @@
   
   
   MDTextField:
-    id: input_text
+    id: input_field
     mode: "outlined"
     theme_line_color: "Custom"
     line_color_focus: get_color_from_hex("#ffffff00")
@@ -56,7 +61,8 @@
     theme_text_color: "Custom"
     text_color_normal: get_color_from_hex("#1e1e1ebb")
     text_color_focus: get_color_from_hex("#1e1e1e")
-    text: "Hello\n"*10
+    # text: "Hello\n"*10
+    text: "plot and make forecast for makoko from quater of 2021"
     height: dp(48)
     # There is issues with multiline rendering
     # multiline: True
@@ -67,7 +73,7 @@
   MDIconButton:
     icon: "send"
     style: "filled"
-    on_press: print(f"{input_text.height=}")
+    on_press: root.action(input_field, input_field.text) if root.action is not None else None
     pos_hint: {"center_y": .5}
     theme_bg_color: "Custom"
     md_bg_color: get_color_from_hex("#ffffff")
@@ -82,8 +88,13 @@
   orientation: "vertical"
   padding: dp(16)
   spacing: dp(16)
+  input_field: panel.input_field
+  chat_list: wrapper.chat_list
 
   ChatContainer:
+    id: wrapper
 
   ChatPanel:
+    id: panel
+    action: root.action
     height: dp(40)

@@ -1,8 +1,7 @@
 from kivy.uix.behaviors.button import ButtonBehavior
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
-from kivy.properties import AliasProperty
+from kivy.properties import AliasProperty, ObjectProperty
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.recycleview import MDRecycleView
 from kivy.core.text import Label as CoreLabel
 from kivy.core.text.text_layout import layout_text
@@ -36,10 +35,7 @@ class ChatList(MDRecycleView):
 
     def __init__(self, **kwargs):
         super(ChatList, self).__init__(**kwargs)
-        self.messages = [dict(
-            is_bot=idx % 2 == 0,
-            text=f"We are currently at the value \n{
-                idx} and \nwhen we equate \nit we have `{'q'*(idx+1)}` \n {'0'*20*(idx+5)}") for idx in range(20)]
+        self.messages = [dict(text="Let help in analysis", is_bot=True)]
 
     def determine_height(self, text: str):
         ll = CoreLabel()
@@ -51,15 +47,19 @@ class ChatList(MDRecycleView):
         return (w, h)
 
     def height_update(self, value):
-
         value = [
-            dict(**data,
-                 item_size=self.determine_height(data['text'])) for data in value]
-
+            {**data,
+             "item_size": self.determine_height(data['text']),
+             # "pos_hint": {"right": 1 if data['is_bot'] else None}
+             } for data in value]
         self.data = value
 
-    messages = AliasProperty(lambda x: None, height_update, bind=["data"])
+    def get_message(self):
+        return self.data
+
+    messages = AliasProperty(get_message, height_update, bind=["data"])
 
 
 class ChatLayout(MDBoxLayout):
-    pass
+    action = ObjectProperty()
+    input_field = ObjectProperty()

@@ -12,4 +12,10 @@ selected_region = app.data.unique_key[0]
 # result = app.forecast(region_key=selected_region, end_time=pd.Timestamp.now())
 # print(app.data.filtered_df(selected_region).iloc[-20:])
 result = app.forecast(region_key=selected_region,
-                      start_time=pd.Timestamp(year=1980, month=1, day=1), end_time=pd.Timestamp(year=2020, month=1, day=1))
+                      start_time=pd.Timestamp(year=2018, month=1, day=1), end_time=pd.Timestamp(year=2020, month=1, day=1))
+
+X, y = result
+X = X.dt.strftime("%m/%Y")
+y = y.astype(str)
+print(",".join(X))
+print(",".join(y))

@@ -45,6 +45,8 @@ class BaseScreenView(MDScreen, Observer):
     Error Handling Mechanism
     """
 
+    info = StringProperty()
+
     def __init__(self, **kw):
         super().__init__(**kw)
         # Often you need to get access to the application object from the view
@@ -57,7 +59,6 @@ class BaseScreenView(MDScreen, Observer):
     def on_error(self, _, text):
         if text == "":
             return
-        print(f"Error {text}")
         Clock.schedule_once(lambda _: self.setter("error")(None, ""), 0)
         # Show snackbar
         MDSnackbar(
@@ -65,6 +66,23 @@ class BaseScreenView(MDScreen, Observer):
                 text=text,
                 theme_text_color="Custom",
                 text_color=(1, 0, 0, 1),
+            ),
+            y=dp(36),
+            pos_hint={"right": 1, "top": 1.},
+            size_hint_x=.85,
+        ).open()
+
+    @mainthread
+    def on_info(self, _, text):
+        if text == "":
+            return
+        Clock.schedule_once(lambda _: self.setter("info")(None, ""), 0)
+        # Show snackbar
+        MDSnackbar(
+            MDSnackbarText(
+                text=text,
+                theme_text_color="Custom",
+                text_color=(0, .5, .5, 1),
             ),
             y=dp(36),
             pos_hint={"right": 1, "top": 1.},

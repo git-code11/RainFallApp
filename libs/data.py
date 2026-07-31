@@ -177,7 +177,8 @@ class ForecastEngine:
             for time in timestamps:
                 feature = self.feature_at_time(region_key, time)
                 output = model(feature[1].astype(np.float32))
-                assert time == feature[0], "Different timestamp during forecast"
+                assert time == pd.Timestamp(
+                    feature[0]), "Different timestamp during forecast"
                 self.update_record(region_key, time, output[0])
         result = self.get_data(region_key, [start_time, end_time])
         return result

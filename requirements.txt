@@ -155,4 +155,4 @@ virtualenv==21.5.1
 websockets==15.0.1
 wxPython==4.2.4
 xkbregistry==0.3
-yt-dlp==2026.3.17
+yt-dlp==2026.7.4

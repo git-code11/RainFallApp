@@ -1,4 +1,3 @@
-from kivy.uix.behaviors.button import ButtonBehavior
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.properties import AliasProperty, ObjectProperty
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -10,18 +9,14 @@ from kivy.uix.textinput import TextInput
 from kivymd.uix.behaviors.backgroundcolor_behavior import BackgroundColorBehavior
 
 
-class ChatText(ButtonBehavior, RecycleDataViewBehavior, MDBoxLayout):
+class ChatText(RecycleDataViewBehavior, MDBoxLayout):
     def __init__(self, **kwargs):
         super(ChatText, self).__init__(**kwargs)
 
-    def on_press(self):
-        print(f"Wonderful {self.height=} {self.width=}")
-
-
-def refresh_view_attrs(self, rv, index, data):
-    ''' Catch and handle the view changes '''
-    super().refresh_view_attrs(
-        rv, index, data)
+    def refresh_view_attrs(self, rv, index, data):
+        ''' Catch and handle the view changes '''
+        super().refresh_view_attrs(
+            rv, index, data)
 
 
 class ChatTextInput(BackgroundColorBehavior, TextInput, MDAdaptiveWidget):

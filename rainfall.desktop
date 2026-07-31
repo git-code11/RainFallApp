@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=RainFall
+Comment=RainFall App
+Exec=/home/user/RainFallApp/run.sh
+Type=Application
+Icon=/home/user/RainFallApp/assets/images/icon.ico
+Categories=Panel;Internet
+

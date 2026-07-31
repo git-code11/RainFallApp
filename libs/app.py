@@ -1,6 +1,11 @@
 import pandas as pd
 from libs.data import ForecastEngine
-from libs.dl2 import TFLiteRuntime as TFLiteRuntime2
+
+USE_LATEST = False
+if USE_LATEST:
+    from libs.dl2 import TFLiteRuntime
+else:
+    from libs.dl import TFLiteRuntime
 
 
 class ForecastApp:
@@ -23,12 +28,7 @@ class ForecastApp:
             **params
         )
 
-        try:
-            self.tflite = TFLiteRuntime2.load(model_path)
-        except Exception as e:
-            print(f"Exception {e}")
-            from libs.dl import TFLiteRuntime
-            self.tflite = TFLiteRuntime.load(model_path)
+        self.tflite = TFLiteRuntime.load(model_path)
 
     def forecast(self, plot_format: bool = True, **kwargs):
         result = self.data.forecast(self.tflite, **kwargs)

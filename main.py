@@ -8,14 +8,22 @@ https://kivymd.readthedocs.io/en/latest/api/kivymd/tools/patterns/create_project
 To run the application in hot boot mode, execute the command in the console:
 DEBUG=1 python main.py
 """
+from kivy.clock import Clock, mainthread
+from multitasking import task
+from kivymd.app import MDApp
+from kivymd.uix.screenmanager import MDScreenManager
+from kivy.properties import BooleanProperty
+from View.screens import screens
+from kivy.core.window import Window
+from kivy import Config
 import dotenv
 dotenv.load_dotenv()
-from kivy import Config
 
 # Change the values of the application window size as you need.
 # Config.set("graphics", "height", resolution[1])
 Config.set("graphics", "height", "360")
 Config.set("graphics", "width", "480")
+
 
 # TODO: You may know an easier way to get the size of a computer display.
 try:
@@ -24,19 +32,12 @@ try:
 except OSError:
     import pyautogui
     resolution = pyautogui.size()
+except:
+    resolution = [Window.width, Window.height]
 
-from kivy.core.window import Window
 # Place the application window on the right side of the computer screen.
 Window.top = 0
 Window.left = resolution[0] - Window.width
-
-from View.screens import screens
-from kivy.properties import BooleanProperty
-from kivymd.uix.screenmanager import MDScreenManager
-from kivymd.app import MDApp
-from multitasking import task
-from kivy.clock import Clock, mainthread
-
 
 
 # """
@@ -64,7 +65,6 @@ class RainfallProject(MDApp):
         # application.
         self.manager_screens = MDScreenManager()
         self.onboarding_screen = "onboarding screen"
-
 
     def build(self) -> MDScreenManager:
         self.add_screen(self.onboarding_screen)
@@ -113,6 +113,7 @@ class RainfallProject(MDApp):
         view.manager_screens = self.manager_screens
         view.name = name_screen
         self.manager_screens.add_widget(view)
+
 
 if __name__ == "__main__":
     RainfallProject().run()

@@ -23,7 +23,7 @@ dotenv.load_dotenv()
 # Config.set("graphics", "height", resolution[1])
 Config.set("graphics", "height", "360")
 Config.set("graphics", "width", "480")
-
+Config.set("graphics", "fullscreen", 0)
 
 # TODO: You may know an easier way to get the size of a computer display.
 try:

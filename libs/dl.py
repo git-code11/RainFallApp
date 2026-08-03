@@ -12,10 +12,11 @@ class TFLiteRuntime:
 
     def __call__(self, X):
         X = np.array(X, dtype=np.float32)
+        X = X[np.newaxis, ...]
         self.interpreter.set_tensor(self.input_index, X)
         self.interpreter.invoke()
         y_pred = self.interpreter.get_tensor(self.output_index)
-        return y_pred
+        return y_pred[0]
 
     @classmethod
     def load(cls, model_path):
